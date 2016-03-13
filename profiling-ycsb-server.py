@@ -13,8 +13,8 @@ oltp_home = "~/oltpbench"
 parameters = {
 "$IP":  "localhost",
 "$PORT": "57721",
-"$SCALE_FACTOR": "100",
-"$TIME":  "30",
+"$SCALE_FACTOR": "1",
+"$TIME":  "10",
 "$THREAD_NUMBER": "1",
 "$READ_RATIO": "50",
 "$INSERT_RATIO": "50",
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     start_peloton_valgrind = "valgrind --tool=callgrind --trace-children=yes ./src/peloton -D ./data > /dev/null 2>&1 &"
     stop_peloton = "pg_ctl -D ./data stop"
     script_location = "peloton_ycsb_config.xml"
-    start_ycsb_bench = "./oltpbenchmark -b ycsb -c " + script_location + " --create=true --load=false --execute=true -s 5 -o outputfile"
+    start_ycsb_bench = "./oltpbenchmark -b ycsb -c " + cwd + "/" + script_location + " --create=true --load=false --execute=true -s 5 -o outputfile"
     
     os.system(stop_peloton)
     os.system(start_cleanup)
