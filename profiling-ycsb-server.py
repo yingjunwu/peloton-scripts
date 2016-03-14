@@ -24,39 +24,51 @@ parameters = {
 "$RMW_RATIO": "0"
 }
 
-thread_num = 1
-read_ratio = 0
+cwd = os.getcwd()
+config_filename = "peloton_ycsb_config.xml"
+start_cleanup_script = "rm -rf callgrind.out.*"
+start_peloton_valgrind_script = "valgrind --tool=callgrind --trace-children=yes ./src/peloton -D ./data > /dev/null 2>&1 &"
+start_peloton_script = "./src/peloton -D ./data > /dev/null 2>&1 &"
+stop_peloton_script = "pg_ctl -D ./data stop"
+start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=false --execute=true -s 5 -o outputfile"
 
-def prepare_parameters():
+def prepare_parameters(thread_num, read_ratio):
     parameters["$THREAD_NUMBER"] = str(thread_num)
     parameters["$READ_RATIO"] = str(read_ratio)
     parameters["$INSERT_RATIO"] = str(100-read_ratio)
     ycsb_template = ""
-    with open("peloton-scripts/ycsb_template.xml") as in_file:
+    with open("ycsb_template.xml") as in_file:
         ycsb_template = in_file.read()
     for param in parameters:
         ycsb_template = ycsb_template.replace(param, parameters[param])
-    with open("peloton_ycsb_config.xml", "w") as out_file:
+    with open(config_filename, "w") as out_file:
         out_file.write(ycsb_template)
         
-if __name__ == "__main__":
-    prepare_parameters()
-    cwd = os.getcwd()
-    
-    start_cleanup = "rm -rf callgrind.out.*"
-    start_peloton_valgrind = "valgrind --tool=callgrind --trace-children=yes ./src/peloton -D ./data > /dev/null 2>&1 &"
-    stop_peloton = "pg_ctl -D ./data stop"
-    script_location = "peloton_ycsb_config.xml"
-    start_ycsb_bench = "./oltpbenchmark -b ycsb -c " + cwd + "/" + script_location + " --create=true --load=false --execute=true -s 5 -o outputfile"
-    
-    os.system(stop_peloton)
-    os.system(start_cleanup)
-    os.system(start_peloton_valgrind)
+def start_peloton_valgrind():
+    os.system(stop_peloton_script)
+    os.system(start_cleanup_script)
+    os.system(start_peloton_valgrind_script)
     time.sleep(5)
+
+def start_peloton():
+    os.system(stop_peloton_script)
+    os.system(start_cleanup_script)
+    os.system(start_peloton_script)
+    time.sleep(5)
+
+def start_bench():
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_ycsb_bench)
+    os.system(start_ycsb_bench_script)
+
+def stop_peloton():
     # go back to cwd
     os.chdir(cwd)
-    os.system(stop_peloton)
+    os.system(stop_peloton_script)
 
+if __name__ == "__main__":
+    prepare_parameters(1, 0)
+
+    #start_peloton()
+    start_bench()
+    #stop_peloton()
