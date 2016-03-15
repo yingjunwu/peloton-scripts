@@ -3,6 +3,7 @@
 # date: March 5th, 2016
 
 import os
+import sys
 import time
 
 server1_name = "yingjunw@dev1.db.pdl.cmu.local"
@@ -56,19 +57,37 @@ def start_peloton():
     os.system(start_peloton_script)
     time.sleep(5)
 
-def start_bench():
+def start_bench(thread_num, read_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_ycsb_bench_script)
+    os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(read_ratio))
 
 def stop_peloton():
     # go back to cwd
     os.chdir(cwd)
     os.system(stop_peloton_script)
 
-if __name__ == "__main__":
-    prepare_parameters(1, 0)
+def collect_data(thread_num, read_ratio):
+    os.chdir(cwd)
+    dir_name = "collected_data_t" + str(thread_num) + "_" + str(read_ratio)
+    os.system("rm -rf " + dir_name)
+    os.system("mkdir " + dir_name)
+    os.system("mv callgrind.out.* " + dir_name)
 
-    #start_peloton()
-    start_bench()
-    #stop_peloton()
+if __name__ == "__main__":
+    if (len(sys.argv) != 4):
+        print("usage: " + sys.argv[0] + " is_execute thread_num read_ratio")
+        exit(0)
+    is_execute = int(sys.argv[1])
+    thread_num = int(sys.argv[2])
+    read_ratio = int(sys.argv[3])
+    print("thread_num = " + str(thread_num))
+    print("read_ratio = " + str(read_ratio))
+
+    if (is_execute != 0):
+        prepare_parameters(thread_num, read_ratio)
+        start_peloton_valgrind()
+        start_bench(thread_num, read_ratio)
+    else:
+        stop_peloton()
+        collect_data(thread_num, read_ratio)

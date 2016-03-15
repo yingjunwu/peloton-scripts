@@ -63,6 +63,7 @@ def start_bench(thread_num, read_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
     os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(read_ratio))
+    time.sleep(2)
 
 def stop_peloton():
     # go back to cwd
@@ -76,3 +77,4 @@ if __name__ == "__main__":
             prepare_parameters(thread_num, read_ratio)
             start_bench(thread_num, read_ratio)
     stop_peloton()
+    print("the end.......")
