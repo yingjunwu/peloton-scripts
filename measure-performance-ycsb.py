@@ -31,7 +31,7 @@ start_cleanup_script = "rm -rf callgrind.out.*"
 start_peloton_valgrind_script = "valgrind --tool=callgrind --trace-children=yes peloton -D ./data > /dev/null 2>&1 &"
 start_peloton_script = "peloton -D ./data > /dev/null 2>&1 &"
 stop_peloton_script = "pg_ctl -D ./data stop"
-start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=false --execute=true -s 5 -o outputfile"
+start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=true --execute=true -s 5 -o outputfile"
 
 def prepare_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
     os.chdir(cwd)
