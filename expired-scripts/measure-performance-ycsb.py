@@ -6,12 +6,14 @@ import os
 import sys
 import time
 
+server1_name = "yingjunw@dev1.db.pdl.cmu.local"
+server2_name = "yingjunw@dev2.db.pdl.cmu.local"
+
 oltp_home = "~/oltpbench"
-peloton_port = "5432"
 
 parameters = {
 "$IP":  "localhost",
-"$PORT": peloton_port,
+"$PORT": "57721",
 "$SCALE_FACTOR": "1",
 "$TIME":  "10",
 "$THREAD_NUMBER": "1",
@@ -25,8 +27,10 @@ parameters = {
 
 cwd = os.getcwd()
 config_filename = "peloton_ycsb_config.xml"
-start_peloton_script = "./bin/peloton -port " + peloton_port + " > /dev/null 2>&1 &"
-stop_peloton_script = ""
+start_cleanup_script = "rm -rf callgrind.out.*"
+start_peloton_valgrind_script = "valgrind --tool=callgrind --trace-children=yes peloton -D ./data > /dev/null 2>&1 &"
+start_peloton_script = "peloton -D ./data > /dev/null 2>&1 &"
+stop_peloton_script = "pg_ctl -D ./data stop"
 start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=true --execute=true -s 5 -o outputfile"
 
 def prepare_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
@@ -42,11 +46,18 @@ def prepare_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
         ycsb_template = ycsb_template.replace(param, parameters[param])
     with open(config_filename, "w") as out_file:
         out_file.write(ycsb_template)
-
+        
+def start_peloton_valgrind():
+    os.chdir(cwd)
+    os.system(stop_peloton_script)
+    os.system(start_cleanup_script)
+    os.system(start_peloton_valgrind_script)
+    time.sleep(5)
 
 def start_peloton():
     os.chdir(cwd)
     os.system(stop_peloton_script)
+    os.system(start_cleanup_script)
     os.system(start_peloton_script)
     time.sleep(5)
 
