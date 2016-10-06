@@ -26,8 +26,8 @@ parameters = {
 cwd = os.getcwd()
 config_filename = "peloton_ycsb_config.xml"
 start_peloton_script = "./bin/peloton -port " + peloton_port + " > /dev/null 2>&1 &"
-stop_peloton_script = ""
-start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=true --execute=true -s 5 -o outputfile"
+stop_peloton_script = "pkill -9 peloton"
+start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + config_filename + " --create=true --load=true --execute=true -s 5 -o outputfile | grep requests/sec"
 
 def prepare_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
     os.chdir(cwd)
@@ -61,19 +61,16 @@ def stop_peloton():
     os.chdir(cwd)
     os.system(stop_peloton_script)
 
-def collect_data(thread_num, read_ratio, insert_ratio, update_ratio):
-    os.chdir(cwd)
-    dir_name = "collected_data_t" + str(thread_num) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio)
-    os.system("rm -rf " + dir_name)
-    os.system("mkdir " + dir_name)
-    os.system("mv callgrind.out.* " + dir_name)
-
 if __name__ == "__main__":
-    read_ratio = 0
+    read_ratio = 100
     insert_ratio = 0
-    update_ratio = 100
+    update_ratio = 0
     start_peloton()
-    for thread_num in range(1, 7):
+
+    prepare_parameters(1, read_ratio, insert_ratio, update_ratio)
+    start_bench(1, read_ratio, insert_ratio, update_ratio)
+
+    for thread_num in range(8, 41, 8):
         prepare_parameters(thread_num, read_ratio, insert_ratio, update_ratio)
         start_bench(thread_num, read_ratio, insert_ratio, update_ratio)
     stop_peloton()
