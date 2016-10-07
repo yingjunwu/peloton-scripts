@@ -62,7 +62,7 @@ def start_peloton(is_profiling):
 def start_bench(thread_num, read_ratio, insert_ratio, update_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_ycsb_bench_script) + "_t" + str(thread_num) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio)
+    os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio))
     time.sleep(2)
 
 def stop_peloton():
