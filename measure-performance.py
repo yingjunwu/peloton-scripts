@@ -66,9 +66,10 @@ def prepare_ycsb_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
         out_file.write(ycsb_template)
 
 
-def prepare_tpcc_parameters(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
+def prepare_tpcc_parameters(thread_num, scale_factor, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
     os.chdir(cwd)
     tpcc_parameters["$THREAD_NUMBER"] = str(thread_num)
+    tpcc_parameters["$SCALE_FACTOR"] = str(scale_factor)
     tpcc_parameters["$NEW_ORDER_RATIO"] = str(new_order_ratio)
     tpcc_parameters["$PAYMENT_RATIO"] = str(payment_ratio)
     tpcc_parameters["$ORDER_STATUS_RATIO"] = str(order_status_ratio)
@@ -99,10 +100,10 @@ def start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio):
     os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio))
     time.sleep(2)
 
-def start_tpcc_bench(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
+def start_tpcc_bench(thread_num, scale_factor, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_tpcc_bench_script + "_t" + str(thread_num) + "_" + str(new_order_ratio) + "_" + str(payment_ratio) + "_" + str(order_status_ratio) + "_" + str(delivery_ratio) + "_" + str(stock_level_ratio))
+    os.system(start_tpcc_bench_script + "_t" + str(thread_num) + "_" + str(scale_factor) + "_" + str(new_order_ratio) + "_" + str(payment_ratio) + "_" + str(order_status_ratio) + "_" + str(delivery_ratio) + "_" + str(stock_level_ratio))
     time.sleep(2)
 
 
@@ -113,9 +114,9 @@ def stop_peloton():
 
 if __name__ == "__main__":
 
-    if (len(sys.argv) != 7 and len(sys.argv) != 9):
+    if (len(sys.argv) != 7 and len(sys.argv) != 10):
         print("usage: " + sys.argv[0] + " ycsb is_profiling thread_num read_ratio insert_ratio update_ratio")
-        print("usage: " + sys.argv[0] + " tpcc is_profiling thread_num new_order_ratio payment_ratio order_status_ratio delivery_ratio stock_level_ratio")
+        print("usage: " + sys.argv[0] + " tpcc is_profiling thread_num scale_factor new_order_ratio payment_ratio order_status_ratio delivery_ratio stock_level_ratio")
         exit(0)
 
     if (len(sys.argv) == 7):
@@ -136,24 +137,26 @@ if __name__ == "__main__":
         start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio)
         stop_peloton()
 
-    elif (len(sys.argv) == 9):
+    elif (len(sys.argv) == 10):
         is_profiling = int(sys.argv[2])
         thread_num = int(sys.argv[3])
-        new_order_ratio = int(sys.argv[4])
-        payment_ratio = int(sys.argv[5])
-        order_status_ratio = int(sys.argv[6])
-        delivery_ratio = int(sys.argv[7])
-        stock_level_ratio = int(sys.argv[8])
+        scale_factor = int(sys.argv[4])
+        new_order_ratio = int(sys.argv[5])
+        payment_ratio = int(sys.argv[6])
+        order_status_ratio = int(sys.argv[7])
+        delivery_ratio = int(sys.argv[8])
+        stock_level_ratio = int(sys.argv[9])
         
         print("thread_num = " + str(thread_num))
+        print("scale_factor = " + str(scale_factor))
         print("new_order_ratio = " + str(new_order_ratio))
         print("payment_ratio = " + str(payment_ratio))
         print("order_status_ratio = " + str(order_status_ratio))
         print("delivery_ratio = " + str(delivery_ratio))
         print("order_status_ratio = " + str(order_status_ratio))
 
-        prepare_tpcc_parameters(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
+        prepare_tpcc_parameters(thread_num, scale_factor, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
 
         start_peloton(is_profiling)
-        start_tpcc_bench(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
+        start_tpcc_bench(thread_num, scale_factor, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
         stop_peloton()
