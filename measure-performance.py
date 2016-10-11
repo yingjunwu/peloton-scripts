@@ -51,9 +51,10 @@ start_ycsb_bench_script = "./oltpbenchmark -b ycsb -c " + cwd + "/" + ycsb_confi
 start_tpcc_bench_script = "./oltpbenchmark -b tpcc -c " + cwd + "/" + tpcc_config_filename + " --create=true --load=true --execute=true -s 5 -o outputfile | grep requests/sec >> peloton_tpcc_result"
 
 
-def prepare_ycsb_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
+def prepare_ycsb_parameters(thread_num, scale_factor, read_ratio, insert_ratio, update_ratio):
     os.chdir(cwd)
     ycsb_parameters["$THREAD_NUMBER"] = str(thread_num)
+    ycsb_parameters["$SCALE_FACTOR"] = str(scale_factor)
     ycsb_parameters["$READ_RATIO"] = str(read_ratio)
     ycsb_parameters["$INSERT_RATIO"] = str(insert_ratio)
     ycsb_parameters["$UPDATE_RATIO"] = str(update_ratio)
@@ -94,10 +95,10 @@ def start_peloton(is_profiling):
         os.system(start_peloton_script)
     time.sleep(2)
 
-def start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio):
+def start_ycsb_bench(thread_num, scale_factor, read_ratio, insert_ratio, update_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio))
+    os.system(start_ycsb_bench_script + "_t" + str(thread_num) + "_" + str(scale_factor) + "_" + str(read_ratio) + "_" + str(insert_ratio) + "_" + str(update_ratio))
     time.sleep(2)
 
 def start_tpcc_bench(thread_num, scale_factor, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
@@ -114,27 +115,28 @@ def stop_peloton():
 
 if __name__ == "__main__":
 
-    if (len(sys.argv) != 7 and len(sys.argv) != 10):
-        print("usage: " + sys.argv[0] + " ycsb is_profiling thread_num read_ratio insert_ratio update_ratio")
+    if (len(sys.argv) != 8 and len(sys.argv) != 10):
+        print("usage: " + sys.argv[0] + " ycsb is_profiling thread_num scale_factor read_ratio insert_ratio update_ratio")
         print("usage: " + sys.argv[0] + " tpcc is_profiling thread_num scale_factor new_order_ratio payment_ratio order_status_ratio delivery_ratio stock_level_ratio")
         exit(0)
 
-    if (len(sys.argv) == 7):
+    if (len(sys.argv) == 8):
         is_profiling = int(sys.argv[2])
         thread_num = int(sys.argv[3])
-        read_ratio = int(sys.argv[4])
-        insert_ratio = int(sys.argv[5])
-        update_ratio = int(sys.argv[6])
+        scale_factor = int(sys.argv[4])
+        read_ratio = int(sys.argv[5])
+        insert_ratio = int(sys.argv[6])
+        update_ratio = int(sys.argv[7])
         
         print("thread_num = " + str(thread_num))
         print("read_ratio = " + str(read_ratio))
         print("insert_ratio = " + str(insert_ratio))
         print("update_ratio = " + str(update_ratio))
 
-        prepare_ycsb_parameters(thread_num, read_ratio, insert_ratio, update_ratio)
+        prepare_ycsb_parameters(thread_num, scale_factor, read_ratio, insert_ratio, update_ratio)
 
         start_peloton(is_profiling)
-        start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio)
+        start_ycsb_bench(thread_num, scale_factor, read_ratio, insert_ratio, update_ratio)
         stop_peloton()
 
     elif (len(sys.argv) == 10):
