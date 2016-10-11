@@ -114,8 +114,8 @@ def stop_peloton():
 if __name__ == "__main__":
 
     if (len(sys.argv) != 7 and len(sys.argv) != 9):
-        print("usage: " + sys.argv[0] + "ycsb is_profiling thread_num read_ratio insert_ratio update_ratio")
-        print("usage: " + sys.argv[0] + "tpcc is_profiling thread_num new_order_ratio payment_ratio order_status_ratio delivery_ratio stock_level_ratio")
+        print("usage: " + sys.argv[0] + " ycsb is_profiling thread_num read_ratio insert_ratio update_ratio")
+        print("usage: " + sys.argv[0] + " tpcc is_profiling thread_num new_order_ratio payment_ratio order_status_ratio delivery_ratio stock_level_ratio")
         exit(0)
 
     if (len(sys.argv) == 7):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         prepare_ycsb_parameters(thread_num, read_ratio, insert_ratio, update_ratio)
 
         start_peloton(is_profiling)
-        start_bench(thread_num, read_ratio, insert_ratio, update_ratio)
+        start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio)
         stop_peloton()
 
     elif (len(sys.argv) == 9):
@@ -155,5 +155,5 @@ if __name__ == "__main__":
         prepare_tpcc_parameters(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
 
         start_peloton(is_profiling)
-        start_bench(thread_num, read_ratio, insert_ratio, update_ratio)
+        start_tpcc_bench(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio)
         stop_peloton()
