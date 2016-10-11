@@ -68,13 +68,13 @@ def prepare_ycsb_parameters(thread_num, read_ratio, insert_ratio, update_ratio):
 
 def prepare_tpcc_parameters(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
     os.chdir(cwd)
-    ycsb_parameters["$THREAD_NUMBER"] = str(thread_num)
-    ycsb_parameters["$NEW_ORDER_RATIO"] = str(new_order_ratio)
-    ycsb_parameters["$PAYMENT_RATIO"] = str(payment_ratio)
-    ycsb_parameters["$ORDER_STATUS_RATIO"] = str(order_status_ratio)
-    ycsb_parameters["$DELIVERY_RATIO"] = str(delivery_ratio)
-    ycsb_parameters["$STOCK_LEVEL_RATIO"] = str(stock_level_ratio)
-    ycsb_template = ""
+    tpcc_parameters["$THREAD_NUMBER"] = str(thread_num)
+    tpcc_parameters["$NEW_ORDER_RATIO"] = str(new_order_ratio)
+    tpcc_parameters["$PAYMENT_RATIO"] = str(payment_ratio)
+    tpcc_parameters["$ORDER_STATUS_RATIO"] = str(order_status_ratio)
+    tpcc_parameters["$DELIVERY_RATIO"] = str(delivery_ratio)
+    tpcc_parameters["$STOCK_LEVEL_RATIO"] = str(stock_level_ratio)
+    tpcc_template = ""
     with open("tpcc_template.xml") as in_file:
         tpcc_template = in_file.read()
     for param in tpcc_parameters:
