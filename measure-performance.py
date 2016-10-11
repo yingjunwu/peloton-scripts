@@ -102,7 +102,7 @@ def start_ycsb_bench(thread_num, read_ratio, insert_ratio, update_ratio):
 def start_tpcc_bench(thread_num, new_order_ratio, payment_ratio, order_status_ratio, delivery_ratio, stock_level_ratio):
     # go to oltpbench directory
     os.chdir(os.path.expanduser(oltp_home))
-    os.system(start_tpcc_bench_script + "_t" + str(thread_num) + "_" + str(new_order_ratio) + "_" + str(payment_ratio) + "_" + str(order_status_ratio) + "_" + str(delivery_ratio) + "_" + stock_level_ratio)
+    os.system(start_tpcc_bench_script + "_t" + str(thread_num) + "_" + str(new_order_ratio) + "_" + str(payment_ratio) + "_" + str(order_status_ratio) + "_" + str(delivery_ratio) + "_" + str(stock_level_ratio))
     time.sleep(2)
 
 
