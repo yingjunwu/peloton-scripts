@@ -2,7 +2,7 @@
 
 This repository maintains the scripts for running Peloton with oltpbench (https://github.com/cmu-db/oltpbench). For now, we support YCSB and TPC-C benchmark. Before running the scripts, you must have already downloaded and compiled the oltpbench.
 
-The following steps describe how to run Peloton with oltpbench on a single machine using measure-performance.py.
+Following the steps below, you can run Peloton with oltpbench on a single machine.
 
 1. Set the oltpbench directory: https://github.com/yingjunwu/peloton-scripts/blob/master/measure-performance.py#L9.
 
