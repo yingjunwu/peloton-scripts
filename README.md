@@ -1,4 +1,4 @@
-# peloton-scripts
+# How to use?
 
 This repository maintains the scripts for running Peloton with oltpbench (https://github.com/cmu-db/oltpbench). For now, we support YCSB and TPC-C benchmark. Before running the scripts, you must have already downloaded and compiled the oltpbench.
 
