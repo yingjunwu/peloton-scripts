@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <parameters>
-    <dbtype>postgres</dbtype>
+    <dbtype>peloton</dbtype>
     <driver>org.postgresql.Driver</driver>
     <DBUrl>jdbc:postgresql://$IP:$PORT/ycsb/</DBUrl>
     <DBName>ycsb</DBName>

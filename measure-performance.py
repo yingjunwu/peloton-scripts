@@ -42,7 +42,7 @@ tpcc_config_filename = "peloton_tpcc_config.xml"
 
 start_cleanup_script = "rm -rf callgrind.out.*"
 
-start_peloton_script = "./bin/peloton -port " + peloton_port + " > /dev/null 2>&1 &"
+start_peloton_script = "./bin/peloton -port " + peloton_port + " &"
 start_peloton_valgrind_script = "valgrind --tool=callgrind --trace-children=yes " + start_peloton_script
 
 stop_peloton_script = "pkill -f peloton"
